@@ -6,7 +6,7 @@
     
     <!-- Meta Tags untuk Link Preview -->
     <meta property="og:title" content="IFTHOR RIDE | Kota Bharu - Besut">
-<meta property="og:description" content="Tentatif rasmi program Ride Ifthor Santai Berwang Ramadan 1447H/2026M. Jom RSVP sekarang!">
+<meta property="og:description" content="Tentatif rasmi program Ride Ifthor Santai Berwang 2026. Jom RSVP sekarang!">
 <meta property="og:url" content="https://alisabki.github.io/rideifthor/">
 <meta property="og:image" content="https://alisabki.github.io/rideifthor/preview.jpg">
 <meta property="og:type" content="website">
@@ -161,7 +161,9 @@
                         <div class="pl-6 flex-1">
                             <h3 class="font-bold dark:text-white text-slate-800 text-[13px] mb-1">🕌 Berkumpul, Briefing & Solat Asar</h3>
                             <p class="text-[11px] dark:text-text-muted text-slate-500 leading-relaxed mb-2">Berkumpul di Masjid Telaga Bata untuk briefing ringkas. Semua rider wajib solat Asar berjemaah di sini supaya urusan petang lebih mudah dan lancar.</p>
-                            <span class="inline-block bg-accent-red/10 border border-accent-red/20 text-accent-red text-[9px] font-bold px-2 py-0.5 rounded-full">Masjid Telaga Bata</span>
+                            <a href="https://maps.app.goo.gl/SULUTZ8xYHQSDqzp6" target="_blank" class="inline-block bg-accent-red/10 border border-accent-red/20 text-accent-red text-[10px] font-bold px-3 py-1 rounded-full hover:bg-accent-red/20 transition-all hover:scale-105 active:scale-95">
+                                <i class="fa-solid fa-location-dot mr-1"></i> Masjid Telaga Bata
+                            </a>
                         </div>
                     </div>
 
@@ -195,7 +197,9 @@
                         <div class="pl-6 flex-1">
                             <h3 class="font-bold dark:text-white text-slate-800 text-[13px] mb-1 text-accent-yellow">🛒 Sampai di Bazar Ramadan Kg Raja</h3>
                             <p class="text-[11px] dark:text-text-muted text-slate-500 leading-relaxed mb-2">Tiba di Besut! Terus shopping juadah berbuka. Masing-masing pilih juadah paling power yang ada — alang-alang dah sampai. Tapi jangan membazir ye! 😄</p>
-                            <span class="inline-block bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[9px] font-bold px-2 py-0.5 rounded-full">Bazaar Ramadan Kota Putra, Kg Raja</span>
+                            <a href="https://www.google.com/maps/search/?api=1&query=Bazar+Ramadan+Kota+Putra+Kg+Raja" target="_blank" class="inline-block bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold px-3 py-1 rounded-full hover:bg-emerald-500/20 transition-all hover:scale-105 active:scale-95">
+                                <i class="fa-solid fa-location-dot mr-1"></i> Bazaar Ramadan Kota Putra, Kg Raja
+                            </a>
                         </div>
                     </div>
 
@@ -397,6 +401,36 @@
                 </form>
             </section>
 
+            <!-- 8.5. Calendar Widget -->
+            <section class="mx-6 p-6 dark:bg-card-bg-dark bg-white rounded-3xl border dark:border-white/5 border-black/5 shadow-xl mb-6 hover-lift">
+                <h2 class="text-[10px] font-black text-accent-yellow tracking-widest mb-4 uppercase flex items-center">
+                    <i class="fa-regular fa-calendar-check mr-2"></i> Simpan Tarikh
+                </h2>
+                
+                <div class="flex items-center justify-between dark:bg-app-bg-dark bg-slate-100 p-4 rounded-2xl mb-5 border dark:border-white/5 border-black/5">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] text-accent-red font-bold uppercase tracking-widest">Khamis</span>
+                        <span class="text-xl font-black dark:text-white text-slate-800 leading-tight">12 Mac 2026</span>
+                        <span class="text-[10px] dark:text-text-muted text-slate-500 font-bold mt-1">4:00 PTG - Selesai</span>
+                    </div>
+                    <div class="text-3xl text-accent-yellow opacity-90 pr-2">
+                        <i class="fa-solid fa-calendar-day"></i>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <!-- Google Calendar Link -->
+                    <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=IFTHOR+RIDE+2026+%7C+KB+-+Besut&dates=20260312T080000Z/20260312T130000Z&details=Ride+Santai+Berwang+IFThor+2026.+Berkumpul+4:00+PM+di+Masjid+Telaga+Bata.&location=Masjid+Telaga+Bata,+Kota+Bharu" target="_blank" class="w-full bg-blue-600 hover:bg-blue-500 text-white text-[10px] tracking-wider font-black py-3.5 rounded-2xl shadow-md transition-all flex justify-center items-center active:scale-95">
+                        <i class="fa-brands fa-google mr-2 text-sm"></i> ADD TO GOOGLE CALENDAR
+                    </a>
+                    
+                    <!-- Apple/Outlook ICS Download -->
+                    <button onclick="downloadICS()" class="w-full dark:bg-slate-700 bg-slate-200 dark:hover:bg-slate-600 hover:bg-slate-300 dark:text-white text-slate-800 text-[10px] tracking-wider font-black py-3.5 rounded-2xl shadow-md transition-all flex justify-center items-center active:scale-95 border dark:border-white/10 border-black/10">
+                        <i class="fa-brands fa-apple mr-2 text-sm text-slate-900 dark:text-white"></i> ADD TO APPLE CALENDAR
+                    </button>
+                </div>
+            </section>
+
             <!-- 9. Navigation Button Section -->
             <section class="mx-6 p-5 dark:bg-card-bg-dark bg-white rounded-3xl border dark:border-white/5 border-black/5 shadow-xl mb-12 hover-lift text-center">
                 <h2 class="text-[10px] font-black text-accent-red tracking-widest mb-4 uppercase">📍 Lokasi & Navigasi</h2>
@@ -420,9 +454,14 @@
             </section>
 
             <!-- 10. Footer (From foot.jpg) -->
-            <footer class="text-center text-[8px] dark:text-text-muted text-slate-400 font-bold tracking-widest pb-10 px-6 uppercase opacity-80 flex items-center justify-center gap-2">
-                <i class="fa-solid fa-motorcycle text-accent-red"></i>
-                IFThor Ride – Rider Santai Berwang 2026 | Ramadan 1447H | Stay Safe, Ride Together
+            <footer class="text-center text-[8px] dark:text-text-muted text-slate-400 font-bold tracking-widest pb-10 px-6 uppercase opacity-80 flex flex-col items-center justify-center gap-2">
+                <div class="flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-motorcycle text-accent-red"></i>
+                    IFThor Ride – Rider Santai Berwang 2026 | Ramadan 1447H | Stay Safe, Ride Together
+                </div>
+                <div class="mt-1">
+                    COPYRIGHT &copy; <a href="https://www.facebook.com/alisabki/" target="_blank" class="hover:text-accent-red transition-colors underline underline-offset-2">NIKOLAI.NICHOLAS 2026</a>
+                </div>
             </footer>
         </div>
     </div>
@@ -473,6 +512,18 @@
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
+        // Download ICS File function for Apple/Outlook Calendar
+        function downloadICS() {
+            const icsMSG = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//IFTHOR RIDE//MY\nBEGIN:VEVENT\nUID:ifthor2026@ride\nDTSTAMP:20260311T000000Z\nDTSTART:20260312T080000Z\nDTEND:20260312T130000Z\nSUMMARY:IFTHOR RIDE 2026 | KB - Besut\nDESCRIPTION:Ride Santai Berwang IFThor 2026. Berkumpul 4:00 PM di Masjid Telaga Bata.\nLOCATION:Masjid Telaga Bata, Kota Bharu\nEND:VEVENT\nEND:VCALENDAR";
+            const blob = new Blob([icsMSG], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.setAttribute('download', 'IfthorRide2026.ics');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
         // RSVP WhatsApp Logic
         document.getElementById('rsvpForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -502,7 +553,3 @@
     </script>
 </body>
 </html>
-
-
-
-
