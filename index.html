@@ -489,13 +489,14 @@
             });
 
             let logistikText = logistikItems.length > 0 
-                ? `%0A%0A*Barang Logistik Yg Dibawa:*%0A- ` + logistikItems.join('%0A- ') 
+                ? `\n\n*Barang Logistik Yg Dibawa:*\n- ` + logistikItems.join('\n- ') 
                 : '';
 
             const adminPhone = "60129572575"; 
-            const message = `*RSVP IFTHOR RIDE 2026*%0A%0A*Nama:* ${nama}%0A*Moto:* ${moto}%0A*Status:* ${status}${logistikText}%0A%0A_Sent via Ifthor Ride App_`;
+            const message = `*RSVP IFTHOR RIDE 2026*\n\n*Nama:* ${nama}\n*Moto:* ${moto}\n*Status:* ${status}${logistikText}\n\n_Sent via Ifthor Ride App_`;
             
-            window.open(`https://wa.me/${adminPhone}?text=${message}`, '_blank');
+            // encodeURIComponent digunakan untuk memastikan simbol seperti '&' tidak memotong pautan URL
+            window.open(`https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`, '_blank');
         });
     </script>
 </body>
