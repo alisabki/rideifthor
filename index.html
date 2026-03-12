@@ -401,6 +401,16 @@
                 </form>
             </section>
 
+            <!-- 8.1 Senarai RSVP -->
+            <section class="mx-6 p-6 dark:bg-card-bg-dark bg-white rounded-3xl border dark:border-white/5 border-black/5 shadow-xl mb-6 hover-lift">
+                <h2 class="text-[10px] font-black text-accent-yellow tracking-widest mb-4 uppercase flex items-center">
+                    <i class="fa-solid fa-users mr-2"></i> Senarai Rider (RSVP)
+                </h2>
+                <div id="rsvpListContainer" class="space-y-3 max-h-48 overflow-y-auto pr-1">
+                    <p class="text-[10px] text-center dark:text-text-muted text-slate-500 py-4 italic">Belum ada yang RSVP. Jadilah yang pertama!</p>
+                </div>
+            </section>
+
             <!-- 8.5. Calendar Widget -->
             <section class="mx-6 p-6 dark:bg-card-bg-dark bg-white rounded-3xl border dark:border-white/5 border-black/5 shadow-xl mb-6 hover-lift">
                 <h2 class="text-[10px] font-black text-accent-yellow tracking-widest mb-4 uppercase flex items-center">
@@ -466,7 +476,69 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Setup Firebase Cloud Storage ---
+        const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : 'null';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'ifthor-ride-2026';
+        let app, auth, db, currentUser;
+        let rsvpDataList = [];
+
+        try {
+            if (firebaseConfigStr !== 'null') {
+                const firebaseConfig = JSON.parse(firebaseConfigStr);
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+            }
+        } catch (e) {
+            console.error("Firebase init failed:", e);
+        }
+
+        if (auth) {
+            const initAuth = async () => {
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (error) {
+                    console.error("Auth Error", error);
+                }
+            };
+            initAuth();
+
+            onAuthStateChanged(auth, (user) => {
+                currentUser = user;
+                if (user && db) {
+                    listenToRSVPs();
+                }
+            });
+        }
+
+        function listenToRSVPs() {
+            if (!currentUser || !db) return;
+            // Gunakan path koleksi Firestore yang wajib
+            const rsvpCol = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
+            
+            onSnapshot(rsvpCol, (snapshot) => {
+                rsvpDataList = [];
+                snapshot.forEach((doc) => {
+                    rsvpDataList.push({ id: doc.id, ...doc.data() });
+                });
+                // Susun ikut yang paling baru (masa submit)
+                rsvpDataList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                renderRSVPList();
+            }, (error) => {
+                console.error("Error listening to RSVPs", error);
+            });
+        }
+        // -------------------------------------
+
         // Theme Toggle Logic
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
@@ -512,8 +584,8 @@
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
-        // Download ICS File function for Apple/Outlook Calendar
-        function downloadICS() {
+        // Download ICS File function for Apple/Outlook Calendar - Made global for onclick
+        window.downloadICS = function() {
             const icsMSG = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//IFTHOR RIDE//MY\nBEGIN:VEVENT\nUID:ifthor2026@ride\nDTSTAMP:20260311T000000Z\nDTSTART:20260312T080000Z\nDTEND:20260312T130000Z\nSUMMARY:IFTHOR RIDE 2026 | KB - Besut\nDESCRIPTION:Ride Santai Berwang IFThor 2026. Berkumpul 4:00 PM di Masjid Telaga Bata.\nLOCATION:Masjid Telaga Bata, Kota Bharu\nEND:VEVENT\nEND:VCALENDAR";
             const blob = new Blob([icsMSG], { type: 'text/calendar;charset=utf-8' });
             const link = document.createElement('a');
@@ -522,19 +594,72 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        };
+
+        function renderRSVPList() {
+            const container = document.getElementById('rsvpListContainer');
+            if (rsvpDataList.length === 0) {
+                container.innerHTML = '<p class="text-[10px] text-center dark:text-text-muted text-slate-500 py-4 italic">Belum ada yang RSVP. Jadilah yang pertama!</p>';
+                return;
+            }
+
+            container.innerHTML = rsvpDataList.map(item => {
+                let statusColor = item.status.includes('Ya') ? 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20' :
+                                  item.status.includes('Mungkin') ? 'text-accent-yellow bg-accent-yellow/10 border-accent-yellow/20' :
+                                  'text-accent-red bg-accent-red/10 border-accent-red/20';
+                
+                let shortStatus = item.status.split(',')[0].split(' ')[0];
+
+                return `
+                <div class="flex justify-between items-center p-3 rounded-xl dark:bg-app-bg-dark bg-slate-50 border dark:border-white/5 border-black/5 transition-all">
+                    <div class="flex flex-col">
+                        <span class="text-[11px] font-bold dark:text-white text-slate-800 uppercase">${item.nama}</span>
+                        <span class="text-[9px] dark:text-text-muted text-slate-500 uppercase">${item.moto}</span>
+                    </div>
+                    <span class="text-[9px] font-bold px-2 py-1 rounded-full border ${statusColor} uppercase">
+                        ${shortStatus}
+                    </span>
+                </div>
+                `;
+            }).join('');
         }
 
-        // RSVP WhatsApp Logic
-        document.getElementById('rsvpForm').addEventListener('submit', function(e) {
+        // RSVP WhatsApp & Cloud Logic
+        document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnHtml = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg mr-2"></i> MENGHANTAR...';
+            submitBtn.disabled = true;
+
             const nama = document.getElementById('nama').value;
             const moto = document.getElementById('moto').value;
             const status = document.getElementById('status').value;
+            const timestamp = Date.now();
             
+            const newRsvp = { nama, moto, status, timestamp };
+
+            // Simpan ke Cloud Storage (Firestore) jika sedia
+            if (currentUser && db) {
+                const rsvpCol = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
+                try {
+                    await addDoc(rsvpCol, { ...newRsvp, userId: currentUser.uid });
+                } catch(err) {
+                    console.error("Gagal simpan ke cloud, simpan lokal sementara.", err);
+                    rsvpDataList.unshift(newRsvp);
+                    renderRSVPList();
+                }
+            } else {
+                // Fallback jika cloud tak sedia
+                rsvpDataList.unshift(newRsvp);
+                renderRSVPList();
+            }
+
+            // Dapatkan Logistik
             const logistikItems = [];
             document.querySelectorAll('.todo-checkbox').forEach((cb) => {
                 if(cb.checked) {
-                    // Carian elemen tag 'span' yang mempunyai class font-bold lebih tepat
                     const itemTitle = cb.closest('label').querySelector('span.font-bold').innerText.trim();
                     logistikItems.push(itemTitle);
                 }
@@ -547,7 +672,9 @@
             const adminPhone = "60129572575"; 
             const message = `*RSVP IFTHOR RIDE 2026*\n\n*Nama:* ${nama}\n*Moto:* ${moto}\n*Status:* ${status}${logistikText}\n\n_Sent via Ifthor Ride App_`;
             
-            // encodeURIComponent digunakan untuk memastikan simbol seperti '&' tidak memotong pautan URL
+            // Kembalikan keadaan butang dan buka WhatsApp
+            submitBtn.innerHTML = originalBtnHtml;
+            submitBtn.disabled = false;
             window.open(`https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`, '_blank');
         });
     </script>
