@@ -478,22 +478,28 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Setup Firebase Cloud Storage ---
-        const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : 'null';
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'ifthor-ride-2026';
+        const firebaseConfig = {
+            apiKey: "AIzaSyABOm2b4G4LmoSARvszhYUQHX8ZbI7gE18",
+            authDomain: "ride-ifthor.firebaseapp.com",
+            projectId: "ride-ifthor",
+            storageBucket: "ride-ifthor.firebasestorage.app",
+            messagingSenderId: "672795320898",
+            appId: "1:672795320898:web:f5480011276db6420f43db",
+            measurementId: "G-BL2DWJYZ6J"
+        };
+        
+        const appId = 'ifthor-ride-2026'; // ID unik untuk simpanan database
         let app, auth, db, currentUser;
         let rsvpDataList = [];
 
         try {
-            if (firebaseConfigStr !== 'null') {
-                const firebaseConfig = JSON.parse(firebaseConfigStr);
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-            }
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
         } catch (e) {
             console.error("Firebase init failed:", e);
         }
@@ -501,13 +507,23 @@
         if (auth) {
             const initAuth = async () => {
                 try {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
+                    // Cuba log masuk secara rahsia (anonymous)
+                    await signInAnonymously(auth);
                 } catch (error) {
-                    console.error("Auth Error", error);
+                    console.error("Auth Error:", error.message);
+                    
+                    // Jika ciri belum diaktifkan dalam Firebase Console
+                    if (error.code === 'auth/configuration-not-found' || error.message.includes('configuration-not-found')) {
+                        console.warn(
+                            "⚠️ PENTING: Pangkalan Data (Cloud) tidak akan berfungsi sepenuhnya sehingga anda mengaktifkan tetapan berikut:\n" +
+                            "1. Pergi ke Firebase Console (https://console.firebase.google.com)\n" +
+                            "2. Pilih projek 'ride-ifthor'\n" +
+                            "3. Tekan menu 'Authentication' di sebelah kiri\n" +
+                            "4. Pergi ke tab 'Sign-in method'\n" +
+                            "5. Tekan butang 'Add new provider' dan pilih 'Anonymous'\n" +
+                            "6. Aktifkan (Enable) dan tekan Save."
+                        );
+                    }
                 }
             };
             initAuth();
@@ -652,6 +668,7 @@
                 }
             } else {
                 // Fallback jika cloud tak sedia
+                console.warn("Meneruskan simpanan sementara (fallback) kerana sambungan Cloud gagal.");
                 rsvpDataList.unshift(newRsvp);
                 renderRSVPList();
             }
